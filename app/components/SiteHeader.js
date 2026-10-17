@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 function BagIcon() {
   return (
@@ -14,14 +15,59 @@ function BagIcon() {
 
 export default function SiteHeader({ count, onOpenBag }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
+  const isHome = pathname === "/";
+
+  useEffect(() => {
+    if (!isHome) {
+      setScrolled(false);
+      return undefined;
+    }
+
+    function updateScroll() {
+      setScrolled(window.scrollY > 40);
+    }
+
+    updateScroll();
+    window.addEventListener("scroll", updateScroll, { passive: true });
+    return () => window.removeEventListener("scroll", updateScroll);
+  }, [isHome]);
+
+  useEffect(() => {
+    if (!menuOpen) return undefined;
+    function closeOnEscape(event) {
+      if (event.key === "Escape") setMenuOpen(false);
+    }
+    document.addEventListener("keydown", closeOnEscape);
+    document.body.classList.add("nav-open");
+    return () => {
+      document.removeEventListener("keydown", closeOnEscape);
+      document.body.classList.remove("nav-open");
+    };
+  }, [menuOpen]);
 
   return (
-    <>
-      <div className="announcement">
-        <span>Complimentary delivery on orders over $100</span>
-        <Link href="/perfumes">
-          Discover the collection <span aria-hidden="true">↗</span>
-        </Link>
+    <div
+      className={`header-wrap${isHome ? " header-home" : ""}${scrolled ? " header-scrolled" : ""}${menuOpen ? " mobile-menu-open" : ""}`}
+    >
+      {menuOpen ? (
+        <button
+          className="mobile-menu-backdrop"
+          type="button"
+          aria-label="Close navigation menu"
+          onClick={() => setMenuOpen(false)}
+        />
+      ) : null}
+      <div className="utility-strip">
+        <a className="utility-contact" href="mailto:hello@lujainaeamoure.com">
+          hello@lujainaeamoure.com
+        </a>
+        <p>Complimentary delivery on orders over PKR 100</p>
+        <div className="utility-links">
+          <Link href="/#story">Our story</Link>
+          <Link href="/admin">Admin</Link>
+        </div>
       </div>
       <header className="site-header">
         <button
@@ -34,24 +80,31 @@ export default function SiteHeader({ count, onOpenBag }) {
             <path d="M3 7h18M3 12h18M3 17h18" />
           </svg>
         </button>
-        <nav
-          className={`main-nav${menuOpen ? " is-open" : ""}`}
-          aria-label="Main navigation"
-        >
-          <Link href="/perfumes" onClick={() => setMenuOpen(false)}>
-            Shop all
-          </Link>
-          <Link href="/#story" onClick={() => setMenuOpen(false)}>
-            Our story
-          </Link>
-          <Link href="/#journal" onClick={() => setMenuOpen(false)}>
-            The journal
-          </Link>
-        </nav>
         <Link className="wordmark" href="/" aria-label="Lujainae Amoure home">
           <span>LUJAINAE</span>
           <i>AMOURE</i>
         </Link>
+        <nav
+          className={`main-nav${menuOpen ? " is-open" : ""}`}
+          aria-label="Main navigation"
+        >
+          <div className="mobile-menu-heading">
+            <span>LUJAINAE <i>AMOURE</i></span>
+            <button
+              className="mobile-menu-close"
+              type="button"
+              aria-label="Close navigation"
+              onClick={() => setMenuOpen(false)}
+            >
+              ×
+            </button>
+          </div>
+          <Link href="/" onClick={() => setMenuOpen(false)}>Home</Link>
+          <Link href="/perfumes" onClick={() => setMenuOpen(false)}>Shop all</Link>
+          <Link href="/#story" onClick={() => setMenuOpen(false)}>Our story</Link>
+          <Link className="nav-hot-deals" href="/hot-deals" onClick={() => setMenuOpen(false)}>Hot deals</Link>
+          <Link href="/#journal" onClick={() => setMenuOpen(false)}>Journal</Link>
+        </nav>
         <div className="header-actions">
           <Link className="search-link" href="/perfumes" aria-label="Search perfumes">
             <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -59,7 +112,6 @@ export default function SiteHeader({ count, onOpenBag }) {
               <path d="m16 16 5 5" />
             </svg>
           </Link>
-          <Link className="admin-link" href="/admin">Admin</Link>
           <button
             className="icon-button bag-toggle"
             aria-label={`Open shopping bag, ${count} items`}
@@ -70,6 +122,6 @@ export default function SiteHeader({ count, onOpenBag }) {
           </button>
         </div>
       </header>
-    </>
+    </div>
   );
 }

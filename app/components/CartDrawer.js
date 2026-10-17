@@ -1,5 +1,7 @@
 "use client";
 
+import { formatPrice } from "../currency";
+
 export default function CartDrawer({ items, open, onClose, onRemove, onCheckout }) {
   const count = items.reduce((total, item) => total + item.quantity, 0);
   const subtotal = items.reduce(
@@ -49,7 +51,7 @@ export default function CartDrawer({ items, open, onClose, onRemove, onCheckout 
                   <p>Quantity: {item.quantity}</p>
                 </div>
                 <div className="cart-item-price">
-                  <span>${item.price * item.quantity}</span>
+                  <span>{formatPrice(item.price * item.quantity)}</span>
                   <button
                     className="remove-item"
                     onClick={() => onRemove(item.id)}
@@ -64,7 +66,7 @@ export default function CartDrawer({ items, open, onClose, onRemove, onCheckout 
         <div className="cart-footer">
           <div className="cart-subtotal">
             <span>Subtotal</span>
-            <span className="subtotal-value">${subtotal}</span>
+            <span className="subtotal-value">{formatPrice(subtotal)}</span>
           </div>
           <p>Shipping calculated at checkout.</p>
           <button

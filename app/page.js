@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useProducts } from "./ProductsProvider";
 import ProductSkeleton from "./components/ProductSkeleton";
 import PerfumeCard from "./components/PerfumeCard";
+import HeroSlideshow from "./components/HeroSlideshow";
+import HomeDealsSlideshow from "./components/HomeDealsSlideshow";
 
 const stories = [
   {
@@ -29,6 +31,11 @@ const stories = [
 
 export default function Home() {
   const { products, loading, error, addToBag } = useProducts();
+  const deals = products.filter(
+    (product) =>
+      typeof product.compareAtPrice === "number" &&
+      product.compareAtPrice > product.price,
+  );
   const [email, setEmail] = useState("");
   const [newsletterMessage, setNewsletterMessage] = useState("");
   function handleAddToBag(product) {
@@ -52,33 +59,7 @@ export default function Home() {
         Skip to content
       </a>
       <main id="main">
-        <section className="hero" aria-labelledby="hero-title">
-          <div className="hero-image" />
-          <div className="hero-copy">
-            <p className="eyebrow light">Scent, with a sense of place</p>
-            <h1 id="hero-title">
-              A little closer
-              <br />
-              to <em>yourself.</em>
-            </h1>
-            <p>
-              Quietly distinctive fragrances, composed to stay with you long
-              after the moment has passed.
-            </p>
-            <a className="button button-light" href="#collection">
-              Explore the collection <span aria-hidden="true">→</span>
-            </a>
-          </div>
-          <div className="hero-note">
-            <span>01 / 05</span>
-            <span>Made to be remembered</span>
-          </div>
-          <div className="hero-stamp" aria-hidden="true">
-            <span>EAU DE PARFUM</span>
-            <b>LA</b>
-            <span>EST. 2024</span>
-          </div>
-        </section>
+        <HeroSlideshow />
 
         <section className="intro section-shell">
           <p className="eyebrow">The art of wearing a feeling</p>
@@ -91,6 +72,12 @@ export default function Home() {
             Get to know us <span aria-hidden="true">↗</span>
           </a>
         </section>
+
+        <HomeDealsSlideshow
+          deals={deals}
+          loading={loading}
+          onAdd={handleAddToBag}
+        />
 
         <section className="collection section-shell" id="collection">
           <div className="section-heading">
@@ -128,6 +115,16 @@ export default function Home() {
           )}
           <Link className="text-link mobile-link" href="/perfumes">
             View all fragrances <span aria-hidden="true">→</span>
+          </Link>
+        </section>
+
+        <section className="deals-banner">
+          <div>
+            <p className="eyebrow light">A little treat for your scent wardrobe</p>
+            <h2>Good scents.<br /><em>Even sweeter prices.</em></h2>
+          </div>
+          <Link className="button button-light" href="/hot-deals">
+            Explore hot deals <span aria-hidden="true">→</span>
           </Link>
         </section>
 

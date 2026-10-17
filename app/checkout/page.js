@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useProducts } from "../ProductsProvider";
+import { formatPrice } from "../currency";
 
 function orderReference() {
   return `LA-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
@@ -65,7 +66,7 @@ export default function CheckoutPage() {
             Order reference <strong>{order.reference}</strong>
           </p>
           <p>
-            Your cash-on-delivery total is ${order.total}. Payment would be due
+            Your cash-on-delivery total is {formatPrice(order.total)}. Payment would be due
             when your fragrance arrives.
           </p>
           <div className="local-order-notice" role="note">
@@ -195,20 +196,20 @@ export default function CheckoutPage() {
                   <h3>{item.name}</h3>
                   <p>Qty {item.quantity}</p>
                 </div>
-                <span>${item.price * item.quantity}</span>
+                <span>{formatPrice(item.price * item.quantity)}</span>
               </div>
             ))}
           </div>
           <div className="order-totals">
-            <p><span>Subtotal</span><span>${subtotal}</span></p>
+            <p><span>Subtotal</span><span>{formatPrice(subtotal)}</span></p>
             <p>
               <span>Delivery</span>
-              <span>{shipping === 0 ? "Complimentary" : `$${shipping}`}</span>
+              <span>{shipping === 0 ? "Complimentary" : formatPrice(shipping)}</span>
             </p>
-            <p className="order-total"><strong>Total due on delivery</strong><strong>${total}</strong></p>
+            <p className="order-total"><strong>Total due on delivery</strong><strong>{formatPrice(total)}</strong></p>
           </div>
           <p className="shipping-note">
-            Complimentary delivery on orders over $100.
+            Complimentary delivery on orders over PKR 100.
           </p>
         </aside>
       </div>

@@ -6,6 +6,7 @@ import { useProducts } from "../ProductsProvider";
 import CartDrawer from "./CartDrawer";
 import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
+import WhatsAppButton from "./WhatsAppButton";
 
 export default function StorefrontShell({ children }) {
   const { bag, removeFromBag } = useProducts();
@@ -15,11 +16,11 @@ export default function StorefrontShell({ children }) {
   const count = bag.reduce((total, item) => total + item.quantity, 0);
 
   useEffect(() => {
+    document.body.classList.toggle("no-scroll", bagOpen);
     if (!bagOpen) return undefined;
     const onKeyDown = (event) => {
       if (event.key === "Escape") setBagOpen(false);
     };
-    document.body.classList.add("no-scroll");
     document.addEventListener("keydown", onKeyDown);
     return () => {
       document.body.classList.remove("no-scroll");
@@ -54,6 +55,7 @@ export default function StorefrontShell({ children }) {
           router.push("/checkout");
         }}
       />
+      <WhatsAppButton />
       <div className={`toast${toast ? " is-visible" : ""}`} role="status">
         {toast}
       </div>

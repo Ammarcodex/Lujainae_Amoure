@@ -4,11 +4,14 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useProducts } from "../ProductsProvider";
 import AdminSkeleton from "./AdminSkeleton";
+import { formatPrice } from "../currency";
 
 const emptyForm = {
   name: "",
   notes: "",
+  description: "",
   price: "",
+  compareAtPrice: "",
   label: "",
   image: "",
   alt: "",
@@ -105,7 +108,9 @@ export default function AdminPage() {
     setForm({
       name: product.name,
       notes: product.notes,
+      description: product.description || "",
       price: String(product.price),
+      compareAtPrice: product.compareAtPrice ? String(product.compareAtPrice) : "",
       label: product.label,
       image: product.image,
       alt: product.alt,
@@ -125,12 +130,22 @@ export default function AdminPage() {
     event.preventDefault();
     const name = form.name.trim();
     const price = Number(form.price);
+    const compareAtPrice = form.compareAtPrice.trim()
+      ? Number(form.compareAtPrice)
+      : undefined;
     if (!name || !form.notes.trim() || !form.image.trim() || !form.alt.trim()) {
       setFormError("Complete all required fields before saving.");
       return;
     }
     if (!Number.isFinite(price) || price <= 0) {
       setFormError("Enter a price greater than zero.");
+      return;
+    }
+    if (
+      compareAtPrice !== undefined &&
+      (!Number.isFinite(compareAtPrice) || compareAtPrice <= price)
+    ) {
+      setFormError("The regular price must be greater than the sale price.");
       return;
     }
     if (
@@ -148,7 +163,9 @@ export default function AdminPage() {
       id: editingId || `${createSlug(name)}-${crypto.randomUUID().slice(0, 8)}`,
       name,
       notes: form.notes.trim(),
+      description: form.description.trim(),
       price,
+      ...(compareAtPrice === undefined ? {} : { compareAtPrice }),
       label: form.label.trim(),
       image: form.image.trim(),
       alt: form.alt.trim(),
@@ -261,7 +278,12 @@ export default function AdminPage() {
                   <div className="inventory-description">
                     <h3>{product.name}</h3>
                     <p>{product.notes}</p>
-                    <span>${product.price}</span>
+                    <span>
+                      {product.compareAtPrice ? (
+                        <del>{formatPrice(product.compareAtPrice)}</del>
+                      ) : null}
+                      {formatPrice(product.price)}
+                    </span>
                   </div>
                   <div className="inventory-actions">
                     <button
@@ -311,9 +333,18 @@ export default function AdminPage() {
               placeholder="Amber · Saffron · Vanilla"
               required
             />
+            <label htmlFor="perfume-description">Short description</label>
+            <textarea
+              id="perfume-description"
+              name="description"
+              value={form.description}
+              onChange={updateField}
+              placeholder="Describe the character and feeling of this fragrance"
+              rows={3}
+            />
             <div className="admin-form-row">
               <div>
-                <label htmlFor="perfume-price">Price (USD)</label>
+                <label htmlFor="perfume-price">Price (PKR)</label>
                 <input
                   id="perfume-price"
                   name="price"
@@ -327,16 +358,27 @@ export default function AdminPage() {
                 />
               </div>
               <div>
-                <label htmlFor="perfume-label">Product label</label>
+                <label htmlFor="perfume-compare-price">Regular price (PKR, optional)</label>
                 <input
-                  id="perfume-label"
-                  name="label"
-                  value={form.label}
+                  id="perfume-compare-price"
+                  name="compareAtPrice"
+                  type="number"
+                  min="0.01"
+                  step="0.01"
+                  value={form.compareAtPrice}
                   onChange={updateField}
-                  placeholder="NEW ARRIVAL"
+                  placeholder="Leave blank for no deal"
                 />
               </div>
             </div>
+            <label htmlFor="perfume-label">Product label</label>
+            <input
+              id="perfume-label"
+              name="label"
+              value={form.label}
+              onChange={updateField}
+              placeholder="NEW ARRIVAL"
+            />
             <label htmlFor="perfume-image">Image URL</label>
             <input
               id="perfume-image"

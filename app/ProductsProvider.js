@@ -4,6 +4,9 @@ import { createContext, useContext, useEffect, useState } from "react";
 import {
   DEFAULT_PRODUCTS,
   isProductList,
+  NEW_DEFAULT_PRODUCTS,
+  PRODUCT_MIGRATION_KEY,
+  PRODUCT_MIGRATION_VERSION,
   PRODUCT_STORAGE_KEY,
 } from "./products";
 
@@ -25,7 +28,58 @@ export function ProductsProvider({ children }) {
         if (!isProductList(parsedProducts)) {
           throw new Error("Saved perfume data has an invalid format.");
         }
-        setProducts(parsedProducts);
+        const migrationVersion = window.localStorage.getItem(PRODUCT_MIGRATION_KEY);
+        const productsToMigrate =
+          migrationVersion === PRODUCT_MIGRATION_VERSION
+            ? []
+            : NEW_DEFAULT_PRODUCTS.filter(
+                (product) =>
+                  !parsedProducts.some((saved) => saved.id === product.id),
+              );
+        const defaultProductsById = new Map(
+          DEFAULT_PRODUCTS.map((product) => [product.id, product]),
+        );
+        const correctedImages = {
+          "amber-veil": {
+            previous:
+              "https://images.unsplash.com/photo-1590736969955-71cc94901144?auto=format&fit=crop&w=900&q=85",
+            current: defaultProductsById.get("amber-veil").image,
+          },
+          "desert-bloom": {
+            previous:
+              "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=900&q=85",
+            current: defaultProductsById.get("desert-bloom").image,
+          },
+        };
+        const migratedSavedProducts = parsedProducts.map((product) => {
+          const imageCorrection = correctedImages[product.id];
+          return imageCorrection?.previous === product.image
+            ? { ...product, image: imageCorrection.current }
+            : product;
+        });
+        const migratedProducts = [
+          ...migratedSavedProducts,
+          ...productsToMigrate,
+        ];
+        setProducts(
+          migratedProducts.map((product) => ({
+            ...defaultProductsById.get(product.id),
+            ...product,
+            description:
+              product.description ??
+              defaultProductsById.get(product.id)?.description ??
+              "",
+          })),
+        );
+        if (migrationVersion !== PRODUCT_MIGRATION_VERSION) {
+          window.localStorage.setItem(
+            PRODUCT_STORAGE_KEY,
+            JSON.stringify(migratedProducts),
+          );
+          window.localStorage.setItem(PRODUCT_MIGRATION_KEY, PRODUCT_MIGRATION_VERSION);
+        }
+      } else {
+        window.localStorage.setItem(PRODUCT_MIGRATION_KEY, PRODUCT_MIGRATION_VERSION);
       }
     } catch (loadError) {
       console.error("Unable to load saved perfumes.", loadError);

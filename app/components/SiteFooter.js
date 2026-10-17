@@ -14,6 +14,7 @@ export default function SiteFooter() {
         <div className="footer-column">
           <h3>Explore</h3>
           <Link href="/perfumes">All fragrances</Link>
+          <Link href="/hot-deals">Hot deals</Link>
           <Link href="/#story">Our story</Link>
           <Link href="/#journal">The journal</Link>
         </div>
