@@ -2,6 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+
+const AmbientParticleScene = dynamic(
+  () => import("./AmbientParticleScene"),
+  { ssr: false },
+);
 
 const slides = [
   {
@@ -75,6 +81,7 @@ export default function HeroSlideshow() {
         key={slide.image}
         style={{ backgroundImage: `linear-gradient(90deg, rgba(30,27,23,.66) 0%, rgba(34,30,27,.36) 44%, rgba(37,31,26,.04) 100%), url("${slide.image}")` }}
       />
+      <AmbientParticleScene />
       <div className="hero-copy" key={`copy-${active}`}>
         <p className="eyebrow light">{slide.eyebrow}</p>
         <h1>{slide.title}</h1>

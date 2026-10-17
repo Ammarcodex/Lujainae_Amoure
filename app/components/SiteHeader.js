@@ -17,10 +17,10 @@ export default function SiteHeader({ count, onOpenBag }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
-  const isHome = pathname === "/";
+  const isHeroPage = pathname === "/" || pathname === "/project-amoure";
 
   useEffect(() => {
-    if (!isHome) {
+    if (!isHeroPage) {
       setScrolled(false);
       return undefined;
     }
@@ -32,7 +32,7 @@ export default function SiteHeader({ count, onOpenBag }) {
     updateScroll();
     window.addEventListener("scroll", updateScroll, { passive: true });
     return () => window.removeEventListener("scroll", updateScroll);
-  }, [isHome]);
+  }, [isHeroPage]);
 
   useEffect(() => {
     if (!menuOpen) return undefined;
@@ -47,7 +47,7 @@ export default function SiteHeader({ count, onOpenBag }) {
 
   return (
     <div
-      className={`header-wrap${isHome ? " header-home" : ""}${scrolled ? " header-scrolled" : ""}${menuOpen ? " mobile-menu-open" : ""}`}
+      className={`header-wrap${isHeroPage ? " header-home" : ""}${scrolled ? " header-scrolled" : ""}${menuOpen ? " mobile-menu-open" : ""}`}
     >
       <div className="utility-strip">
         <a className="utility-contact" href="mailto:hello@lujainaeamoure.com">

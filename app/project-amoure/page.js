@@ -1,9 +1,15 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useProducts } from "../ProductsProvider";
 import PerfumeCard from "../components/PerfumeCard";
 import ProductSkeleton from "../components/ProductSkeleton";
+
+const AmbientParticleScene = dynamic(
+  () => import("../components/AmbientParticleScene"),
+  { ssr: false },
+);
 
 const PROJECT_PERFUME_IDS = [
   "oud-reverie",
@@ -35,6 +41,7 @@ export default function ProjectAmourePage() {
     <main id="main" className="project-page">
       <section className="project-hero">
         <div className="project-hero-image" aria-hidden="true" />
+        <AmbientParticleScene />
         <div className="project-hero-copy">
           <p className="eyebrow light">A LUJAINAE AMOURE COLLECTION</p>
           <h1>Project <em>AMOURE</em><br />+ SCENTS</h1>

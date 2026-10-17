@@ -7,6 +7,7 @@ import ProductSkeleton from "./components/ProductSkeleton";
 import PerfumeCard from "./components/PerfumeCard";
 import HeroSlideshow from "./components/HeroSlideshow";
 import HomeDealsSlideshow from "./components/HomeDealsSlideshow";
+import HomeBottleGallery from "./components/HomeBottleGallery";
 
 const stories = [
   {
@@ -55,9 +56,6 @@ export default function Home() {
 
   return (
     <>
-      <a className="skip-link" href="#main">
-        Skip to content
-      </a>
       <main id="main">
         <HeroSlideshow />
 
@@ -72,6 +70,8 @@ export default function Home() {
             Get to know us <span aria-hidden="true">↗</span>
           </a>
         </section>
+
+        <HomeBottleGallery products={products} />
 
         <HomeDealsSlideshow
           deals={deals}

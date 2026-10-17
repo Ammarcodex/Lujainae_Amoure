@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { useProducts } from "../ProductsProvider";
 import PerfumeCard from "../components/PerfumeCard";
 import ProductSkeleton from "../components/ProductSkeleton";
+import ScentFinder from "../components/ScentFinder";
 
 export default function PerfumesPage() {
   const { products, loading, error, addToBag } = useProducts();
@@ -66,6 +67,9 @@ export default function PerfumesPage() {
             </select>
           </label>
         </div>
+        {!loading && products.length ? (
+          <ScentFinder products={products} onAdd={handleAdd} />
+        ) : null}
         {error ? <p className="store-error">{error}</p> : null}
         {loading ? (
           <div className="product-grid catalog-grid" aria-label="Loading perfumes">

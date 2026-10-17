@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useProducts } from "../../ProductsProvider";
 import PerfumeCard from "../../components/PerfumeCard";
+import PerfumeExperience from "../../components/PerfumeExperience";
 import ProductSkeleton from "../../components/ProductSkeleton";
 import { formatPrice } from "../../currency";
 
@@ -68,10 +69,7 @@ export default function PerfumeDetailsPage() {
 
       <section className="product-detail">
         <div className="product-detail-image">
-          <img src={product.image} alt={product.alt} />
-          {product.label ? (
-            <span className="product-label">{product.label}</span>
-          ) : null}
+          <PerfumeExperience product={product} />
         </div>
         <div className="product-detail-copy">
           <p className="eyebrow">THE LUJAINAE COLLECTION</p>
