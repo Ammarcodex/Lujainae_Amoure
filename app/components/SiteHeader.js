@@ -40,10 +40,8 @@ export default function SiteHeader({ count, onOpenBag }) {
       if (event.key === "Escape") setMenuOpen(false);
     }
     document.addEventListener("keydown", closeOnEscape);
-    document.body.classList.add("nav-open");
     return () => {
       document.removeEventListener("keydown", closeOnEscape);
-      document.body.classList.remove("nav-open");
     };
   }, [menuOpen]);
 
@@ -51,14 +49,6 @@ export default function SiteHeader({ count, onOpenBag }) {
     <div
       className={`header-wrap${isHome ? " header-home" : ""}${scrolled ? " header-scrolled" : ""}${menuOpen ? " mobile-menu-open" : ""}`}
     >
-      {menuOpen ? (
-        <button
-          className="mobile-menu-backdrop"
-          type="button"
-          aria-label="Close navigation menu"
-          onClick={() => setMenuOpen(false)}
-        />
-      ) : null}
       <div className="utility-strip">
         <a className="utility-contact" href="mailto:hello@lujainaeamoure.com">
           hello@lujainaeamoure.com
