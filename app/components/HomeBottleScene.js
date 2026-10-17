@@ -209,8 +209,14 @@ export default function HomeBottleScene({ products, selectedId, onSelect }) {
         selectBottleAtPointer(event);
       }
 
+      let previousFrameTime = 0;
       function drawLoop() {
         if (disposed || !visible || document.hidden) return;
+        const now = performance.now();
+        const deltaSeconds = previousFrameTime
+          ? Math.min((now - previousFrameTime) / 1000, 0.05)
+          : 0;
+        previousFrameTime = now;
         const selectedIndex = Math.max(
           0,
           products.findIndex((product) => product.id === selectedIdRef.current),
@@ -223,7 +229,7 @@ export default function HomeBottleScene({ products, selectedId, onSelect }) {
           bottle.position.z += ((selected ? 0.55 : -0.2) - bottle.position.z) * 0.075;
           pedestals[index].position.z +=
             ((selected ? 0.55 : -0.2) - pedestals[index].position.z) * 0.075;
-          bottle.rotation.y += selected ? 0.004 : 0.002;
+          bottle.rotation.y += deltaSeconds * 0.18;
           bottle.position.y =
             0.195 * targetScale +
             0.025 +
@@ -243,7 +249,10 @@ export default function HomeBottleScene({ products, selectedId, onSelect }) {
         window.cancelAnimationFrame(animationFrame);
         if (visible && !document.hidden) {
           if (reducedMotion) render();
-          else animationFrame = window.requestAnimationFrame(drawLoop);
+          else {
+            previousFrameTime = 0;
+            animationFrame = window.requestAnimationFrame(drawLoop);
+          }
         }
       }
 

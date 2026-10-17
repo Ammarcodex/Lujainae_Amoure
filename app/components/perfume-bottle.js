@@ -121,17 +121,72 @@ export function createPerfumeBottle(THREE, name, variant = null) {
 
   const labelCanvas = document.createElement("canvas");
   labelCanvas.width = 512;
-  labelCanvas.height = 320;
+  labelCanvas.height = 512;
   const context = labelCanvas.getContext("2d");
   if (context) {
-    context.fillStyle = "#e8dfd0";
-    context.fillRect(0, 0, labelCanvas.width, labelCanvas.height);
-    context.fillStyle = "#342b27";
+    const goldInk = "rgba(245, 218, 176, 0.96)";
+    context.strokeStyle = goldInk;
+    context.fillStyle = goldInk;
+    context.lineWidth = 3;
+    context.lineCap = "round";
+    context.lineJoin = "round";
+
+    context.beginPath();
+    context.ellipse(256, 162, 92, 106, 0, 0, Math.PI * 2);
+    context.stroke();
+    context.beginPath();
+    context.ellipse(256, 162, 81, 95, 0, 0, Math.PI * 2);
+    context.stroke();
+
+    context.save();
+    context.translate(256, 162);
+    for (let petal = 0; petal < 8; petal += 1) {
+      context.save();
+      context.rotate((Math.PI * 2 * petal) / 8);
+      context.beginPath();
+      context.moveTo(0, -10);
+      context.bezierCurveTo(-23, -29, -21, -63, 0, -73);
+      context.bezierCurveTo(21, -63, 23, -29, 0, -10);
+      context.stroke();
+      context.restore();
+    }
+    context.beginPath();
+    context.arc(0, 0, 11, 0, Math.PI * 2);
+    context.stroke();
+    context.restore();
+
+    context.beginPath();
+    context.moveTo(256, 44);
+    context.lineTo(256, 30);
+    context.moveTo(256, 280);
+    context.lineTo(256, 266);
+    context.stroke();
+    context.beginPath();
+    context.moveTo(251, 37);
+    context.lineTo(256, 32);
+    context.lineTo(261, 37);
+    context.lineTo(256, 42);
+    context.closePath();
+    context.fill();
+    context.beginPath();
+    context.moveTo(251, 273);
+    context.lineTo(256, 268);
+    context.lineTo(261, 273);
+    context.lineTo(256, 278);
+    context.closePath();
+    context.fill();
+
     context.textAlign = "center";
-    context.font = "26px Georgia";
-    context.fillText("LUJAINAE AMOURE", 256, 125);
-    context.font = "italic 34px Georgia";
-    context.fillText(name.toLocaleUpperCase(), 256, 190, 460);
+    context.font = "28px Georgia";
+    context.fillText("LUJAINAE", 256, 333);
+    context.font = "italic 22px Georgia";
+    context.fillText("AMOURE", 256, 361);
+    context.beginPath();
+    context.moveTo(154, 386);
+    context.lineTo(358, 386);
+    context.stroke();
+    context.font = "italic 42px Georgia";
+    context.fillText(name.toLocaleUpperCase(), 256, 439, 460);
   }
   const labelTexture = new THREE.CanvasTexture(labelCanvas);
   labelTexture.colorSpace = THREE.SRGBColorSpace;
@@ -139,10 +194,81 @@ export function createPerfumeBottle(THREE, name, variant = null) {
     map: labelTexture,
     transparent: true,
     side: THREE.DoubleSide,
+    depthWrite: false,
   });
-  const label = new THREE.Mesh(new THREE.PlaneGeometry(1.25, 0.78), labelMaterial);
-  label.position.set(0, -0.1, shapeVariant === 1 ? 0.245 : 0.33);
+  const label = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 1.2), labelMaterial);
+  label.position.set(0, -0.04, 0.43);
   bottle.add(label);
+
+  const backCanvas = document.createElement("canvas");
+  backCanvas.width = 512;
+  backCanvas.height = 512;
+  const backContext = backCanvas.getContext("2d");
+  if (backContext) {
+    const goldInk = "rgba(245, 218, 176, 0.96)";
+    backContext.strokeStyle = goldInk;
+    backContext.fillStyle = goldInk;
+    backContext.lineWidth = 3;
+    backContext.lineCap = "round";
+    backContext.lineJoin = "round";
+
+    backContext.beginPath();
+    backContext.ellipse(256, 244, 126, 178, 0, 0, Math.PI * 2);
+    backContext.stroke();
+    backContext.ellipse(256, 244, 114, 166, 0, 0, Math.PI * 2);
+    backContext.stroke();
+
+    [-1, 1].forEach((direction) => {
+      backContext.save();
+      backContext.translate(256, 294);
+      backContext.scale(direction, 1);
+      backContext.beginPath();
+      backContext.moveTo(0, 95);
+      backContext.bezierCurveTo(12, 42, 16, -26, 0, -96);
+      backContext.stroke();
+      for (let leaf = 0; leaf < 5; leaf += 1) {
+        const y = 66 - leaf * 34;
+        const side = leaf % 2 === 0 ? 1 : -1;
+        backContext.beginPath();
+        backContext.moveTo(0, y);
+        backContext.bezierCurveTo(side * 13, y - 5, side * 25, y - 20, side * 31, y - 31);
+        backContext.bezierCurveTo(side * 12, y - 30, side * 1, y - 18, 0, y);
+        backContext.stroke();
+      }
+      backContext.restore();
+    });
+
+    backContext.textAlign = "center";
+    backContext.font = "28px Georgia";
+    backContext.fillText("LUJINAE AMOURE", 256, 92);
+    backContext.beginPath();
+    backContext.moveTo(174, 112);
+    backContext.lineTo(338, 112);
+    backContext.stroke();
+    backContext.font = "italic 37px Georgia";
+    backContext.fillText(name.toLocaleUpperCase(), 256, 158, 330);
+    backContext.beginPath();
+    backContext.moveTo(206, 356);
+    backContext.lineTo(306, 356);
+    backContext.stroke();
+    backContext.font = "italic 24px Georgia";
+    backContext.fillText("COMPOSED TO LINGER", 256, 397);
+    backContext.font = "18px Georgia";
+    backContext.fillText("EAU DE PARFUM", 256, 427);
+  }
+
+  const backTexture = new THREE.CanvasTexture(backCanvas);
+  backTexture.colorSpace = THREE.SRGBColorSpace;
+  const backMaterial = new THREE.MeshBasicMaterial({
+    map: backTexture,
+    transparent: true,
+    side: THREE.DoubleSide,
+    depthWrite: false,
+  });
+  const backLabel = new THREE.Mesh(new THREE.PlaneGeometry(1.05, 1.2), backMaterial);
+  backLabel.position.set(0, -0.04, -0.43);
+  backLabel.rotation.y = Math.PI;
+  bottle.add(backLabel);
 
   return bottle;
 }
