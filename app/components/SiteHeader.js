@@ -91,6 +91,7 @@ export default function SiteHeader({ count, onOpenBag }) {
           </div>
           <Link href="/" onClick={() => setMenuOpen(false)}>Home</Link>
           <Link href="/perfumes" onClick={() => setMenuOpen(false)}>Shop all</Link>
+          <Link href="/project-amoure" onClick={() => setMenuOpen(false)}>Project Amoure</Link>
           <Link href="/#story" onClick={() => setMenuOpen(false)}>Our story</Link>
           <Link className="nav-hot-deals" href="/hot-deals" onClick={() => setMenuOpen(false)}>Hot deals</Link>
           <Link href="/#journal" onClick={() => setMenuOpen(false)}>Journal</Link>

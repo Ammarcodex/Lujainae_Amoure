@@ -94,13 +94,13 @@ export default function Home() {
           {error ? <p className="store-error">{error}</p> : null}
           {loading ? (
             <div className="product-grid" aria-label="Loading fragrances">
-              {[0, 1, 2].map((item) => (
+              {[0, 1, 2, 3, 4, 5].map((item) => (
                 <ProductSkeleton key={item} />
               ))}
             </div>
           ) : products.length ? (
             <div className="product-grid">
-              {products.slice(0, 3).map((product) => (
+              {products.slice(0, 6).map((product) => (
                 <PerfumeCard
                   product={product}
                   onAdd={handleAddToBag}
@@ -132,23 +132,22 @@ export default function Home() {
           <div
             className="editorial-image"
             role="img"
-            aria-label="Sunlit landscape and soft shadows"
+            aria-label="Fragrance bottle in warm afternoon light"
           />
           <div className="editorial-copy">
-            <p className="eyebrow">A note from our atelier</p>
+            <p className="eyebrow">An olfactive collection</p>
             <h2>
-              Made slowly.
+              Project <em>AMOURE</em>
               <br />
-              <em>Worn your way.</em>
+              + SCENTS
             </h2>
             <p>
-              We believe the best fragrances leave room for you. Each
-              composition begins with thoughtfully sourced ingredients and is
-              shaped with care, balance, and a little bit of wonder.
+              Meet the Lujainae fragrance wardrobe: distinctive compositions
+              made to mark a moment, set a mood, and feel entirely your own.
             </p>
-            <a className="button button-dark" href="#values">
-              The Lujainae approach <span aria-hidden="true">→</span>
-            </a>
+            <Link className="button button-dark" href="/project-amoure">
+              Explore the project <span aria-hidden="true">→</span>
+            </Link>
           </div>
         </section>
 
